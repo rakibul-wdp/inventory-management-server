@@ -19,7 +19,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    console.log('Database connected');
+    const productCollection = client.db('inventory_management').collection('products');
+
+    // load products data
+    app.get('/product', async (req, res) => {
+      const query = {};
+      const cursor = productCollection.find(query);
+      const products = await cursor.toArray();
+      res.send(products);
+    });
   } finally {
     // some kind of code that stope this function
   }
